@@ -137,6 +137,44 @@
     filter: drop-shadow(0 0 30px rgba(100, 200, 255, 1));
 }
 
+/* Prompt Battle Royale text logo */
+.pbr-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    line-height: 1;
+    text-align: center;
+}
+
+.pbr-logo span {
+    display: block;
+    letter-spacing: 4px;
+    text-shadow: 4px 4px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+}
+
+.pbr-logo .l1 { font-size: clamp(22px, 4vw, 40px); color: #fff; }
+.pbr-logo .l2 { font-size: clamp(34px, 7vw, 72px); color: #ffd23f; text-shadow: 5px 5px 0 #ff3b5c, 9px 9px 0 #000; }
+.pbr-logo .l3 { font-size: clamp(26px, 5vw, 52px); color: #2bd1ff; }
+
+.pbr-tagline {
+    z-index: 1;
+    font-size: clamp(9px, 1.2vw, 12px);
+    color: #cfe3ff;
+    margin: -20px 0 28px;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.press-start {
+    z-index: 1;
+    font-size: 11px;
+    color: #fff;
+    margin-top: -18px;
+    animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink { to { visibility: hidden; } }
+
 /* Bottom Arena Section */
 .bottom-arena-container {
     position: absolute;

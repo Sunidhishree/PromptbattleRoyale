@@ -1,0 +1,96 @@
+/* Prompt Battle Royale — shared pixel styles */
+:root {
+    --ink: #0b1020;
+    --panel: #121a36;
+    --panel-2: #1a2550;
+    --line: #2bd1ff;
+    --red: #ff3b5c;
+    --blue: #2bb3ff;
+    --gold: #ffd23f;
+    --green: #3dff8a;
+    --muted: #9fb0d8;
+}
+
+body.pbr {
+    background: radial-gradient(ellipse at center top, #1e90ff 0%, #0a4a8a 30%, #052a50 60%, #011627 100%) fixed;
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    min-height: 100vh;
+}
+
+body.pbr::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.12) 0 1px, transparent 1px 3px);
+    pointer-events: none;
+    z-index: 999;
+}
+
+.pixel-fighter {
+    image-rendering: pixelated;
+    display: block;
+}
+
+.px-panel {
+    background: var(--panel);
+    border: 4px solid #000;
+    box-shadow: inset 0 0 0 3px var(--panel-2), 0 0 0 3px var(--line), 6px 6px 0 3px #000;
+    padding: 16px;
+}
+
+.px-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    padding: 14px 22px;
+    color: #000;
+    background: var(--gold);
+    border: 4px solid #000;
+    box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.25), inset 4px 4px 0 rgba(255, 255, 255, 0.45), 4px 4px 0 #000;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.px-btn:hover { transform: translate(-1px, -1px) scale(1.03); }
+.px-btn:active { transform: translate(2px, 2px); box-shadow: inset 4px 4px 0 rgba(0, 0, 0, 0.25); }
+.px-btn.red { background: var(--red); color: #fff; }
+.px-btn.blue { background: var(--blue); }
+.px-btn.ghost { background: #2a335c; color: #fff; }
+.px-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.px-btn:focus-visible, .battle-card:focus-visible {
+    outline: 3px dashed #fff;
+    outline-offset: 4px;
+}
+
+.tag {
+    display: inline-block;
+    font-size: 9px;
+    padding: 5px 8px;
+    border: 2px solid #000;
+    background: var(--gold);
+    color: #000;
+    text-transform: uppercase;
+}
+
+.tag.red { background: var(--red); color: #fff; }
+.tag.blue { background: var(--blue); }
+
+.top-nav {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.top-nav .px-btn { font-size: 10px; padding: 9px 12px; }
+
+.page-title {
+    font-size: clamp(18px, 3.4vw, 34px);
+    text-align: center;
+    color: var(--gold);
+    text-shadow: 3px 3px 0 var(--red), 6px 6px 0 #000;
+    letter-spacing: 2px;
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Battle — Prompt Battle Royale</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/prompt.css">
+    <style>
+        .select-wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 70px 20px 40px;
+        }
+
+        .sub {
+            text-align: center;
+            font-size: 10px;
+            color: var(--muted);
+            margin: 18px 0 30px;
+            line-height: 1.8;
+        }
+
+        .battle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+        }
+
+        .battle-card {
+            font-family: inherit;
+            color: #fff;
+            text-align: center;
+            background: var(--panel);
+            border: 4px solid #000;
+            box-shadow: inset 0 0 0 3px var(--panel-2), 5px 5px 0 #000;
+            padding: 14px 10px 16px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: transform .12s;
+        }
+
+        .battle-card:hover { transform: translateY(-4px); }
+
+        .battle-card.selected {
+            background: #1d2c66;
+            box-shadow: inset 0 0 0 3px var(--gold), 0 0 0 3px var(--gold), 5px 5px 0 3px #000;
+        }
+
+        .card-num { font-size: 9px; color: var(--gold); }
+
+        .card-vs {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 0;
+            height: 96px;
+        }
+
+        .card-vs canvas { width: 80px; }
+        .card-vs .flip { transform: scaleX(-1); }
+
+        .card-vs b {
+            font-size: 12px;
+            color: var(--red);
+            text-shadow: 2px 2px 0 #000;
+            margin: 0 -6px 34px;
+            z-index: 1;
+        }
+
+        .card-title { font-size: 10px; line-height: 1.7; }
+        .card-blurb { font-size: 8px; color: var(--muted); line-height: 1.7; }
+
+        .preview {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .preview-task {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .preview-task span { color: var(--gold); }
+
+        .preview .side h3 { font-size: 12px; margin: 10px 0; }
+        .preview .side.b { text-align: right; }
+
+        .preview pre {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            line-height: 1.45;
+            background: #0a0f22;
+            border: 2px solid #000;
+            padding: 12px;
+            color: #e8f0ff;
+            text-align: left;
+        }
+
+        .preview .mid {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .preview .mid .vs-big {
+            font-size: 28px;
+            color: var(--red);
+            text-shadow: 3px 3px 0 #000;
+        }
+
+        @media (max-width: 760px) {
+            .preview { grid-template-columns: 1fr; }
+            .preview .side.b { text-align: left; }
+        }
+    </style>
+</head>
+
+<body class="pbr">
+    <div class="top-nav">
+        <button class="px-btn ghost" onclick="location.href='index.html'">◀ HOME</button>
+        <button class="px-btn ghost" id="mute-btn" aria-label="Toggle sound">♪ ON</button>
+    </div>
+
+    <main class="select-wrap">
+        <h1 class="page-title">CHOOSE YOUR BATTLE</h1>
+        <p class="sub">Pick a prompting principle. Two prompts get the same task.<br>
+            The judge scores 4 rounds: accuracy · clarity · tone · format.</p>
+
+        <div class="battle-grid" id="grid" role="list"></div>
+
+        <section class="preview px-panel" id="preview" aria-live="polite"></section>
+    </main>
+
+    <script src="js/sfx.js"></script>
+    <script src="js/battles.js"></script>
+    <script src="js/pixelFighter.js"></script>
+    <script>
+        SFX.bindMuteButton(document.getElementById('mute-btn'));
+
+        const grid = document.getElementById('grid');
+        const preview = document.getElementById('preview');
+        let selected = sessionStorage.getItem('pbr-battle') || BATTLES[0].id;
+
+        const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+        BATTLES.forEach((b, i) => {
+            const card = document.createElement('button');
+            card.className = 'battle-card';
+            card.dataset.id = b.id;
+            card.setAttribute('role', 'listitem');
+            card.innerHTML = `
+                <span class="card-num">BATTLE ${i + 1}</span>
+                <div class="card-vs"></div>
+                <span class="card-title">${esc(b.principle)}</span>
+                <span class="card-blurb">${esc(b.blurb)}</span>`;
+            const vs = card.querySelector('.card-vs');
+            const fa = createFighter(b.A.palette);
+            const fb = createFighter(b.B.palette);
+            fb.canvas.classList.add('flip');
+            const v = document.createElement('b');
+            v.textContent = 'VS';
+            vs.append(fa.canvas, v, fb.canvas);
+            card.addEventListener('click', () => select(b.id, true));
+            card.addEventListener('dblclick', () => go(b.id));
+            grid.appendChild(card);
+        });
+
+        function select(id, scroll) {
+            selected = id;
+            sessionStorage.setItem('pbr-battle', id);
+            grid.querySelectorAll('.battle-card').forEach(c => c.classList.toggle('selected', c.dataset.id === id));
+            const b = getBattle(id);
+            preview.innerHTML = `
+                <div class="preview-task"><span>TASK:</span> ${esc(b.task)}</div>
+                <div class="side a">
+                    <span class="tag red">${esc(b.A.tag)}</span>
+                    <h3>${esc(b.A.name)}</h3>
+                    <pre>${esc(b.A.prompt)}</pre>
+                </div>
+                <div class="mid">
+                    <span class="vs-big">VS</span>
+                    <button class="px-btn red" id="fight-btn">FIGHT!</button>
+                </div>
+                <div class="side b">
+                    <span class="tag blue">${esc(b.B.tag)}</span>
+                    <h3>${esc(b.B.name)}</h3>
+                    <pre>${esc(b.B.prompt)}</pre>
+                </div>`;
+            document.getElementById('fight-btn').addEventListener('click', () => go(id));
+            if (scroll) preview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function go(id) {
+            setTimeout(() => { location.href = 'prompt-arena.html?battle=' + encodeURIComponent(id); }, 150);
+        }
+
+        select(selected, false);
+    </script>
+</body>
+
+</html>

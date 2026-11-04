@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arena — Prompt Battle Royale</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/prompt.css">
+    <link rel="stylesheet" href="css/prompt-arena.css">
+</head>
+
+<body class="pbr">
+    <div class="top-nav">
+        <button class="px-btn ghost" onclick="location.href='prompt-select.html'">◀ BATTLES</button>
+        <button class="px-btn ghost" id="mute-btn" aria-label="Toggle sound">♪ ON</button>
+    </div>
+
+    <main class="arena-wrap">
+        <div class="task-banner px-panel">
+            <span class="task-lbl" id="principle"></span>
+            <span><b>TASK:</b> <span id="task"></span></span>
+        </div>
+
+        <section class="stage" id="stage" aria-label="Fight arena">
+            <div class="hud">
+                <div class="hud-side a">
+                    <div class="hud-name"><span id="nameA"></span><span id="hpA-num">100</span></div>
+                    <div class="hp"><div class="hp-fill" id="hpA"></div></div>
+                </div>
+                <div class="hud-round" id="round-label">READY?</div>
+                <div class="hud-side b">
+                    <div class="hud-name"><span id="hpB-num">100</span><span id="nameB"></span></div>
+                    <div class="hp"><div class="hp-fill" id="hpB"></div></div>
+                </div>
+            </div>
+            <div class="fw a" id="fwA"></div>
+            <div class="fw b" id="fwB"></div>
+            <div class="banner" id="banner" aria-live="assertive"></div>
+        </section>
+
+        <div class="controls">
+            <button class="px-btn red" id="fight-btn">FIGHT!</button>
+            <span class="mode-note">DEMO MODE · outputs &amp; judge scores are pre-written</span>
+        </div>
+
+        <section class="cards">
+            <article class="fcard a">
+                <span class="tag red" id="tagA"></span>
+                <h2 id="cardNameA"></h2>
+                <div class="mini-hp"><div class="hp-fill" id="miniHpA"></div></div>
+                <label>PROMPT</label>
+                <pre class="prompt" id="promptA"></pre>
+                <label>OUTPUT</label>
+                <pre class="output" id="outA"></pre>
+            </article>
+
+            <aside class="judge px-panel">
+                <h3>JUDGE</h3>
+                <table class="score" id="score">
+                    <thead><tr><th></th><th id="thA">A</th><th id="thB">B</th></tr></thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td>TOTAL</td><td id="totA">0</td><td id="totB">0</td></tr></tfoot>
+                </table>
+                <ol class="log" id="log" aria-live="polite"></ol>
+            </aside>
+
+            <article class="fcard b">
+                <span class="tag blue" id="tagB"></span>
+                <h2 id="cardNameB"></h2>
+                <div class="mini-hp"><div class="hp-fill" id="miniHpB"></div></div>
+                <label>PROMPT</label>
+                <pre class="prompt" id="promptB"></pre>
+                <label>OUTPUT</label>
+                <pre class="output" id="outB"></pre>
+            </article>
+        </section>
+    </main>
+
+    <!-- Verdict + Prompt Coach -->
+    <div class="overlay hidden" id="verdict" role="dialog" aria-modal="true" aria-labelledby="v-title">
+        <div class="modal px-panel">
+            <div class="v-fighter" id="v-fighter"></div>
+            <h2 id="v-title"></h2>
+            <p class="v-stats" id="v-stats"></p>
+            <div class="coach">
+                <h3>PROMPT COACH</h3>
+                <p id="coach-why"></p>
+                <div id="coach-rewrite-wrap">
+                    <label>SUGGESTED REWRITE FOR <span id="coach-loser"></span></label>
+                    <pre id="coach-rewrite"></pre>
+                </div>
+            </div>
+            <div class="modal-btns">
+                <button class="px-btn" id="rematch-btn">REMATCH WITH EDITED PROMPT</button>
+                <button class="px-btn ghost" onclick="location.href='prompt-select.html'">OTHER BATTLES</button>
+                <button class="px-btn ghost" id="close-verdict">VIEW ARENA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rematch editor -->
+    <div class="overlay hidden" id="editor" role="dialog" aria-modal="true" aria-labelledby="e-title">
+        <div class="modal px-panel">
+            <h2 id="e-title">EDIT <span id="e-name"></span></h2>
+            <p class="e-help">Tweak the losing prompt and fight again. The Coach's rewrite is filled in, so you can use it or change it.</p>
+            <textarea id="e-text" rows="7" spellcheck="false"></textarea>
+            <p class="e-help small">Demo judge: edited prompts are scored by spotting techniques (example, format rules, role, step-by-step, audience, analogy).</p>
+            <div class="modal-btns">
+                <button class="px-btn red" id="e-go">FIGHT AGAIN!</button>
+                <button class="px-btn ghost" id="e-cancel">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/sfx.js"></script>
+    <script src="js/battles.js"></script>
+    <script src="js/pixelFighter.js"></script>
+    <script src="js/promptArena.js"></script>
+</body>
+
+</html>
